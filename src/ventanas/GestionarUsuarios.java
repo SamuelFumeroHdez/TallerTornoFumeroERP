@@ -80,6 +80,7 @@ public class GestionarUsuarios extends javax.swing.JFrame {
                 int columna_point = 2;
                 if(fila_point > -1){
                     user_update = (String)model.getValueAt(fila_point, columna_point);
+                    dispose();
                     InformacionUsuario informacionUsuario = new InformacionUsuario();
                     informacionUsuario.setVisible(true);
                 }

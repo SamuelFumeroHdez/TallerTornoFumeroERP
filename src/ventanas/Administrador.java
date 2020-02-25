@@ -7,6 +7,7 @@ package ventanas;
 
 import java.sql.*;
 import clases.Conexion;
+import clases.RoundBorder;
 import java.awt.Image;
 import java.awt.Toolkit;
 import javax.swing.Icon;
@@ -118,12 +119,22 @@ public class Administrador extends javax.swing.JFrame {
         getContentPane().add(jButton_Creatividad, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 70, 120, 100));
 
         jButton_Capturista.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/add.png"))); // NOI18N
+        jButton_Capturista.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_CapturistaActionPerformed(evt);
+            }
+        });
         getContentPane().add(jButton_Capturista, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 240, 120, 100));
 
         jButton_Tecnico.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/notificaciones.png"))); // NOI18N
         getContentPane().add(jButton_Tecnico, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 240, 120, 100));
 
         jButton_Notificaciones.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/tecnico.png"))); // NOI18N
+        jButton_Notificaciones.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_NotificacionesActionPerformed(evt);
+            }
+        });
         getContentPane().add(jButton_Notificaciones, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 240, 120, 100));
 
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
@@ -165,6 +176,16 @@ public class Administrador extends javax.swing.JFrame {
         GestionarUsuarios gestionarUsuarios = new GestionarUsuarios();
         gestionarUsuarios.setVisible(true);
     }//GEN-LAST:event_jButton_GestionarUsuariosActionPerformed
+
+    private void jButton_CapturistaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_CapturistaActionPerformed
+        RegistrarCliente registrarCliente = new RegistrarCliente();
+        registrarCliente.setVisible(true);
+    }//GEN-LAST:event_jButton_CapturistaActionPerformed
+
+    private void jButton_NotificacionesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_NotificacionesActionPerformed
+        GestionarClientes gestionarClientes = new GestionarClientes();
+        gestionarClientes.setVisible(true);
+    }//GEN-LAST:event_jButton_NotificacionesActionPerformed
 
     /**
      * @param args the command line arguments

@@ -122,12 +122,11 @@ public class Login extends javax.swing.JFrame {
                     if(tipo_nivel.equalsIgnoreCase("Administrador") && estatus.equalsIgnoreCase("Activo")){
                         dispose(); //JFrame es destruido por el sistema operativo para poder abrir otra interfaz
                         new Administrador().setVisible(true);
-                    }else if(tipo_nivel.equalsIgnoreCase("Capturista") && estatus.equalsIgnoreCase("Activo")){
+                    }else if(tipo_nivel.equalsIgnoreCase("CEO") && estatus.equalsIgnoreCase("Activo")){
                         dispose(); //JFrame es destruido por el sistema operativo para poder abrir otra interfaz
-                        new Capturista().setVisible(true);
-                    }else if (tipo_nivel.equalsIgnoreCase("Tecnico") && estatus.equalsIgnoreCase("Activo")){
-                        dispose(); //JFrame es destruido por el sistema operativo para poder abrir otra interfaz
-                        new Tecnico().setVisible(true);
+                        new Ceo().setVisible(true);
+                    }else if(!estatus.equalsIgnoreCase("Activo")){
+                        JOptionPane.showMessageDialog(null, "Usuario con acceso restringido.\nContacte con el administrador del sistema");
                     }
                 }else{
                     JOptionPane.showMessageDialog(null, "Datos de acceso incorrectos");

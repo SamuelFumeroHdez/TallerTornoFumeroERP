@@ -172,7 +172,7 @@ public class RegistrarUsuarios extends javax.swing.JFrame {
         nombre = txt_nombre.getText().trim();
         telefono = txt_telefono.getText().trim();
         permisos_cmb = cmb_niveles.getSelectedIndex()+1;
-        
+
         if(mail.equals("")){
             txt_mail.setBackground(Color.red);
             validacion++;
@@ -193,13 +193,13 @@ public class RegistrarUsuarios extends javax.swing.JFrame {
             txt_telefono.setBackground(Color.red);
             validacion++;
         }
-        
+
         if(permisos_cmb == 1){
             permisos_string = "Administrador";
         }else{
             permisos_string = "CEO";
         }
-        
+
         try {
             Connection cn = Conexion.conectar();
             PreparedStatement pst = cn.prepareStatement(
@@ -225,7 +225,7 @@ public class RegistrarUsuarios extends javax.swing.JFrame {
                         pst2.setString(7,"Activo");
                         pst2.setString(8,user);
                         pst2.setString(9,pass);
-                        
+
                         pst2.executeUpdate();
                         cn2.close();
                         limpiar();
