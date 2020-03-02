@@ -66,6 +66,7 @@ public class InformacionUsuario extends javax.swing.JFrame {
         } catch (SQLException e) {
             System.err.println("Error en informacion de usuario. " + e);
             JOptionPane.showMessageDialog(null, "ERROR al consultar información del usuario. Contacte con el administrador del sistema.");
+            dispose();
         }
     }
     

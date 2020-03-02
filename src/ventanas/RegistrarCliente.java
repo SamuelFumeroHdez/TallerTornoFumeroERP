@@ -272,52 +272,35 @@ public class RegistrarCliente extends javax.swing.JFrame {
         }
         
         if(validacion==0){
+            
             try {
-                Connection cn2 = Conexion.conectar();
-                PreparedStatement pst2 = cn2.prepareStatement(
-                "select NIF from cliente where NIF = '" + nif + "'");
-                ResultSet rs2 = pst2.executeQuery();
-                if(rs2.next()){
-                    txt_NIF.setBackground(Color.red);
-                    JOptionPane.showMessageDialog(null, "El NIF del cliente ya existe.");
-                    pst2.close();
-                }else{
-                    try {
-                        Connection cn = Conexion.conectar();
-                        PreparedStatement pst = cn.prepareStatement(
-                            "insert into cliente values (?, ?, ?, ?, ?, ?, ?)");
-                        pst.setInt(1, 0);
-                        pst.setString(2, nombre);
-                        pst.setString(3, nombre_legal);
-                        pst.setString(4, direccion);
-                        pst.setString(5, nif);
-                        pst.setString(6, telefono);
-                        pst.setString(7, mail);
+                Connection cn = Conexion.conectar();
+                PreparedStatement pst = cn.prepareStatement(
+                    "insert into cliente values (?, ?, ?, ?, ?, ?, ?)");
+                pst.setInt(1, 0);
+                pst.setString(2, nombre);
+                pst.setString(3, nombre_legal);
+                pst.setString(4, direccion);
+                pst.setString(5, nif);
+                pst.setString(6, telefono);
+                pst.setString(7, mail);
 
-                        pst.executeUpdate();
-                        pst.close();
-                        limpiar();
-                        txt_NIF.setBackground(Color.GREEN);
-                        txt_direccion.setBackground(Color.GREEN);
-                        txt_email.setBackground(Color.GREEN);
-                        txt_nombre.setBackground(Color.GREEN);
-                        txt_nombre_legal.setBackground(Color.GREEN);
-                        txt_telefono.setBackground(Color.GREEN);
+                pst.executeUpdate();
+                cn.close();
+                limpiar();
+                txt_NIF.setBackground(Color.GREEN);
+                txt_direccion.setBackground(Color.GREEN);
+                txt_email.setBackground(Color.GREEN);
+                txt_nombre.setBackground(Color.GREEN);
+                txt_nombre_legal.setBackground(Color.GREEN);
+                txt_telefono.setBackground(Color.GREEN);
 
-                        JOptionPane.showMessageDialog(null, "Registro realizado con éxito");
-                        dispose();
+                JOptionPane.showMessageDialog(null, "Registro realizado con éxito");
+                dispose();
             } catch (Exception e) {
                 System.err.println("ERROR al registrar cliente. " + e);
                 JOptionPane.showMessageDialog(null, "ERROR al registrar cliente.\nContacte con el administrador del sistema");
             }
-                }
-                
-            } catch (SQLException e) {
-                System.err.println("Error al comparar NIF. " + e);
-                JOptionPane.showMessageDialog(null, "Error al comparar NIF.\nContacte con el administrador del sistema");
-            }
-            
-            
         }else{
             JOptionPane.showMessageDialog(null, "Debe llenar todos los campos");
         }

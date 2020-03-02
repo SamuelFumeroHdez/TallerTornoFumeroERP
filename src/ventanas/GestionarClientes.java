@@ -36,6 +36,8 @@ public class GestionarClientes extends javax.swing.JFrame {
     public GestionarClientes() {
         initComponents();
         
+        user = Login.user;
+        
         setTitle("Clientes registrados - Sesión de " + user);
         setSize(630, 330);
         setResizable(false);
@@ -54,8 +56,8 @@ public class GestionarClientes extends javax.swing.JFrame {
             PreparedStatement pst = cn.prepareStatement(
                     "select id_cliente, Nombre, Nombre_legal, email, NIF from cliente");
             ResultSet rs = pst.executeQuery();
-            jTable_usuarios = new JTable(model);
-            jScrollPane1.setViewportView(jTable_usuarios); //Para evitar que si hay muchos usuarios registrados, se pueda hacer scroll en la tabla
+            jTable_clientes = new JTable(model);
+            jScrollPane1.setViewportView(jTable_clientes); //Para evitar que si hay muchos usuarios registrados, se pueda hacer scroll en la tabla
             model.addColumn(" ");
             model.addColumn("Nombre");
             model.addColumn("Nombre legal");
@@ -73,11 +75,11 @@ public class GestionarClientes extends javax.swing.JFrame {
             System.err.println("Error al llenar la tabla. " + e);
             JOptionPane.showMessageDialog(null, "Error al mostrar información.\nContacta con el administrador del sistema");
         }
-        jTable_usuarios.addMouseListener(new MouseAdapter() {
+        jTable_clientes.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e){
-                int fila_point = jTable_usuarios.rowAtPoint(e.getPoint());
-                int columna_point = 2;
+                int fila_point = jTable_clientes.rowAtPoint(e.getPoint());
+                int columna_point = 1;
                 if(fila_point > -1){
                     cliente_update = (String)model.getValueAt(fila_point, columna_point);
                     dispose();
@@ -105,7 +107,7 @@ public class GestionarClientes extends javax.swing.JFrame {
 
         jLabel2 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable_usuarios = new javax.swing.JTable();
+        jTable_clientes = new javax.swing.JTable();
         jLabel_Wallpaper = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -114,10 +116,10 @@ public class GestionarClientes extends javax.swing.JFrame {
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel2.setText("Usuarios Registrados");
+        jLabel2.setText("Clientes Registrados");
         getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 10, -1, -1));
 
-        jTable_usuarios.setModel(new javax.swing.table.DefaultTableModel(
+        jTable_clientes.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -128,7 +130,7 @@ public class GestionarClientes extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane1.setViewportView(jTable_usuarios);
+        jScrollPane1.setViewportView(jTable_clientes);
 
         getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 70, 630, 180));
         getContentPane().add(jLabel_Wallpaper, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 630, 330));
@@ -175,6 +177,6 @@ public class GestionarClientes extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel_Wallpaper;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable_usuarios;
+    private javax.swing.JTable jTable_clientes;
     // End of variables declaration//GEN-END:variables
 }

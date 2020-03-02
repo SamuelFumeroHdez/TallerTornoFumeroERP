@@ -121,6 +121,11 @@ public class Ceo extends javax.swing.JFrame {
         getContentPane().add(jButton_Estadisticas, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 70, 120, 100));
 
         jButton_CrearFactura.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/nueva_factura.png"))); // NOI18N
+        jButton_CrearFactura.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_CrearFacturaActionPerformed(evt);
+            }
+        });
         getContentPane().add(jButton_CrearFactura, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 240, 120, 100));
 
         jButton_GestionarFacturas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/factura3.png"))); // NOI18N
@@ -167,6 +172,11 @@ public class Ceo extends javax.swing.JFrame {
         GestionarClientes gestionarClientes = new GestionarClientes();
         gestionarClientes.setVisible(true);
     }//GEN-LAST:event_jButton_GestionarClientesActionPerformed
+
+    private void jButton_CrearFacturaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_CrearFacturaActionPerformed
+        SeleccionarClienteFactura seleccionarClienteFactura = new SeleccionarClienteFactura();
+        seleccionarClienteFactura.setVisible(true);
+    }//GEN-LAST:event_jButton_CrearFacturaActionPerformed
 
     /**
      * @param args the command line arguments

@@ -5,11 +5,14 @@
  */
 package ventanas;
 
+import java.sql.*;
+import clases.Conexion;
 import java.awt.Color;
 import java.awt.Image;
 import java.awt.Toolkit;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 import javax.swing.WindowConstants;
 
 /**
@@ -19,6 +22,7 @@ import javax.swing.WindowConstants;
 public class InformacionCliente extends javax.swing.JFrame {
     
     String user, cliente_update;
+    int ID;
 
     /**
      * Creates new form InformacionCliente
@@ -42,7 +46,30 @@ public class InformacionCliente extends javax.swing.JFrame {
         jLabel_Wallpaper.setIcon(icono);
         this.repaint();
         
-        jLabel_Titulo.setText("Información del usuario " + cliente_update);
+        jLabel_Titulo.setText("Información del cliente " + cliente_update);
+        
+        try {
+            Connection cn = Conexion.conectar();
+            PreparedStatement pst = cn.prepareStatement(
+                "select * from cliente where Nombre = '" + cliente_update + "'");
+            ResultSet rs = pst.executeQuery();
+            
+            if(rs.next()){
+                ID = rs.getInt("id_cliente");
+                txt_nombre.setText(rs.getString("Nombre"));
+                txt_nombreLegal.setText(rs.getString("Nombre_legal"));
+                txt_nif.setText(rs.getString("NIF"));
+                txt_email.setText(rs.getString("email"));
+                txt_telefono.setText(rs.getString("telefono"));
+                txt_direccion.setText(rs.getString("Dirección"));
+            }
+            cn.close();
+        } catch (SQLException e) {
+            System.err.println("Error al mostrar datos del cliente. " + e);
+            JOptionPane.showMessageDialog(null, "ERROR al mostrar los datos del cliente.\nContace con el administrador del sistema.");
+            dispose();
+            dispose();
+        }
     }
     
     @Override
@@ -67,14 +94,15 @@ public class InformacionCliente extends javax.swing.JFrame {
         jLabel_Nombre5 = new javax.swing.JLabel();
         jLabel_Nombre6 = new javax.swing.JLabel();
         txt_nombre = new javax.swing.JTextField();
-        txt_mail = new javax.swing.JTextField();
+        txt_nombreLegal = new javax.swing.JTextField();
+        txt_nif = new javax.swing.JTextField();
+        txt_email = new javax.swing.JTextField();
+        txt_direccion = new javax.swing.JTextField();
         txt_telefono = new javax.swing.JTextField();
-        txt_username = new javax.swing.JTextField();
-        txt_registradoPor = new javax.swing.JTextField();
-        txt_username1 = new javax.swing.JTextField();
         jButton_Actualizar = new javax.swing.JButton();
-        jButton_RestaurarPassword = new javax.swing.JButton();
+        jButton_EliminarCliente = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
+        jButton_VerFacturas = new javax.swing.JButton();
         jLabel_Wallpaper = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -121,57 +149,102 @@ public class InformacionCliente extends javax.swing.JFrame {
         txt_nombre.setForeground(new java.awt.Color(255, 255, 255));
         txt_nombre.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txt_nombre.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        txt_nombre.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                txt_nombreMouseClicked(evt);
+            }
+        });
+        txt_nombre.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txt_nombreActionPerformed(evt);
+            }
+        });
         getContentPane().add(txt_nombre, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 70, 210, -1));
 
-        txt_mail.setBackground(new java.awt.Color(153, 153, 255));
-        txt_mail.setFont(new java.awt.Font("Arial", 1, 16)); // NOI18N
-        txt_mail.setForeground(new java.awt.Color(255, 255, 255));
-        txt_mail.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txt_mail.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        getContentPane().add(txt_mail, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 130, 210, -1));
+        txt_nombreLegal.setBackground(new java.awt.Color(153, 153, 255));
+        txt_nombreLegal.setFont(new java.awt.Font("Arial", 1, 16)); // NOI18N
+        txt_nombreLegal.setForeground(new java.awt.Color(255, 255, 255));
+        txt_nombreLegal.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txt_nombreLegal.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        txt_nombreLegal.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                txt_nombreLegalMouseClicked(evt);
+            }
+        });
+        txt_nombreLegal.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txt_nombreLegalActionPerformed(evt);
+            }
+        });
+        getContentPane().add(txt_nombreLegal, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 130, 210, -1));
+
+        txt_nif.setBackground(new java.awt.Color(153, 153, 255));
+        txt_nif.setFont(new java.awt.Font("Arial", 1, 16)); // NOI18N
+        txt_nif.setForeground(new java.awt.Color(255, 255, 255));
+        txt_nif.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txt_nif.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        txt_nif.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                txt_nifMouseClicked(evt);
+            }
+        });
+        txt_nif.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txt_nifActionPerformed(evt);
+            }
+        });
+        getContentPane().add(txt_nif, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 190, 210, -1));
+
+        txt_email.setBackground(new java.awt.Color(153, 153, 255));
+        txt_email.setFont(new java.awt.Font("Arial", 1, 16)); // NOI18N
+        txt_email.setForeground(new java.awt.Color(255, 255, 255));
+        txt_email.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txt_email.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        txt_email.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                txt_emailMouseClicked(evt);
+            }
+        });
+        txt_email.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txt_emailActionPerformed(evt);
+            }
+        });
+        getContentPane().add(txt_email, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 70, 210, -1));
+
+        txt_direccion.setBackground(new java.awt.Color(153, 153, 255));
+        txt_direccion.setFont(new java.awt.Font("Arial", 1, 16)); // NOI18N
+        txt_direccion.setForeground(new java.awt.Color(255, 255, 255));
+        txt_direccion.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txt_direccion.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        txt_direccion.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                txt_direccionMouseClicked(evt);
+            }
+        });
+        txt_direccion.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txt_direccionActionPerformed(evt);
+            }
+        });
+        getContentPane().add(txt_direccion, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 190, 210, -1));
 
         txt_telefono.setBackground(new java.awt.Color(153, 153, 255));
         txt_telefono.setFont(new java.awt.Font("Arial", 1, 16)); // NOI18N
         txt_telefono.setForeground(new java.awt.Color(255, 255, 255));
         txt_telefono.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         txt_telefono.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        getContentPane().add(txt_telefono, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 190, 210, -1));
-
-        txt_username.setBackground(new java.awt.Color(153, 153, 255));
-        txt_username.setFont(new java.awt.Font("Arial", 1, 16)); // NOI18N
-        txt_username.setForeground(new java.awt.Color(255, 255, 255));
-        txt_username.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txt_username.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        txt_username.addMouseListener(new java.awt.event.MouseAdapter() {
+        txt_telefono.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                txt_usernameMouseClicked(evt);
+                txt_telefonoMouseClicked(evt);
             }
         });
-        getContentPane().add(txt_username, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 70, 210, -1));
-
-        txt_registradoPor.setBackground(new java.awt.Color(153, 153, 255));
-        txt_registradoPor.setFont(new java.awt.Font("Arial", 1, 16)); // NOI18N
-        txt_registradoPor.setForeground(new java.awt.Color(255, 255, 255));
-        txt_registradoPor.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txt_registradoPor.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        txt_registradoPor.addActionListener(new java.awt.event.ActionListener() {
+        txt_telefono.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txt_registradoPorActionPerformed(evt);
+                txt_telefonoActionPerformed(evt);
             }
         });
-        getContentPane().add(txt_registradoPor, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 190, 210, -1));
-
-        txt_username1.setBackground(new java.awt.Color(153, 153, 255));
-        txt_username1.setFont(new java.awt.Font("Arial", 1, 16)); // NOI18N
-        txt_username1.setForeground(new java.awt.Color(255, 255, 255));
-        txt_username1.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txt_username1.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        txt_username1.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                txt_username1MouseClicked(evt);
-            }
-        });
-        getContentPane().add(txt_username1, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 130, 210, -1));
+        getContentPane().add(txt_telefono, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 130, 210, -1));
 
         jButton_Actualizar.setBackground(new java.awt.Color(153, 153, 255));
         jButton_Actualizar.setFont(new java.awt.Font("Arial Narrow", 0, 18)); // NOI18N
@@ -186,18 +259,18 @@ public class InformacionCliente extends javax.swing.JFrame {
         });
         getContentPane().add(jButton_Actualizar, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 270, 210, 35));
 
-        jButton_RestaurarPassword.setBackground(new java.awt.Color(204, 0, 51));
-        jButton_RestaurarPassword.setFont(new java.awt.Font("Arial Narrow", 0, 18)); // NOI18N
-        jButton_RestaurarPassword.setForeground(new java.awt.Color(255, 255, 255));
-        jButton_RestaurarPassword.setText("Eliminar Cliente");
-        jButton_RestaurarPassword.setBorder(null);
-        jButton_RestaurarPassword.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        jButton_RestaurarPassword.addActionListener(new java.awt.event.ActionListener() {
+        jButton_EliminarCliente.setBackground(new java.awt.Color(204, 0, 51));
+        jButton_EliminarCliente.setFont(new java.awt.Font("Arial Narrow", 0, 18)); // NOI18N
+        jButton_EliminarCliente.setForeground(new java.awt.Color(255, 255, 255));
+        jButton_EliminarCliente.setText("Eliminar Cliente");
+        jButton_EliminarCliente.setBorder(null);
+        jButton_EliminarCliente.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jButton_EliminarCliente.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton_RestaurarPasswordActionPerformed(evt);
+                jButton_EliminarClienteActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton_RestaurarPassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 340, 210, 35));
+        getContentPane().add(jButton_EliminarCliente, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 370, 210, 35));
 
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/nueva_factura.png"))); // NOI18N
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -205,36 +278,147 @@ public class InformacionCliente extends javax.swing.JFrame {
                 jButton1ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 280, 120, 100));
+        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 280, 120, 100));
+
+        jButton_VerFacturas.setBackground(new java.awt.Color(153, 153, 255));
+        jButton_VerFacturas.setFont(new java.awt.Font("Arial Narrow", 0, 18)); // NOI18N
+        jButton_VerFacturas.setForeground(new java.awt.Color(255, 255, 255));
+        jButton_VerFacturas.setText("Ver Facturas del Cliente");
+        jButton_VerFacturas.setBorder(null);
+        jButton_VerFacturas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_VerFacturasActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButton_VerFacturas, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 320, 210, 35));
         getContentPane().add(jLabel_Wallpaper, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 630, 450));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void txt_usernameMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txt_usernameMouseClicked
-        txt_username.setBackground(new Color(153,153,255));
-    }//GEN-LAST:event_txt_usernameMouseClicked
+    private void txt_emailMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txt_emailMouseClicked
+        txt_email.setBackground(new Color(153,153,255));
+    }//GEN-LAST:event_txt_emailMouseClicked
 
-    private void txt_registradoPorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_registradoPorActionPerformed
+    private void txt_direccionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_direccionActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_txt_registradoPorActionPerformed
+    }//GEN-LAST:event_txt_direccionActionPerformed
 
-    private void txt_username1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txt_username1MouseClicked
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txt_username1MouseClicked
+    private void txt_telefonoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txt_telefonoMouseClicked
+        txt_telefono.setBackground(new Color(153,153,255));
+    }//GEN-LAST:event_txt_telefonoMouseClicked
 
     private void jButton_ActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_ActualizarActionPerformed
+        int validacion = 0;
+        String nombre, nombre_legal, direccion, nif, telefono, email;
+        nombre = txt_nombre.getText();
+        nombre_legal = txt_nombreLegal.getText();
+        direccion = txt_direccion.getText();
+        nif = txt_nif.getText();
+        telefono = txt_telefono.getText();
+        email = txt_email.getText();
+        
+        if(nombre.equals("")){
+            txt_nombre.setBackground(Color.red);
+            validacion++;
+        }
+        if(nombre_legal.equals("")){
+            txt_nombreLegal.setBackground(Color.red);
+            validacion++;
+        }
+        if(direccion.equals("")){
+            txt_direccion.setBackground(Color.red);
+            validacion++;
+        }
+        if(nif.equals("")){
+            txt_nif.setBackground(Color.red);
+            validacion++;
+        }
+        if(telefono.equals("")){
+            txt_telefono.setBackground(Color.red);
+            validacion++;
+        }
+        if(email.equals("")){
+            txt_email.setBackground(Color.red);
+            validacion++;
+        }
+        if(validacion==0){
+            try {
+                Connection cn = Conexion.conectar();
+                PreparedStatement pst = cn.prepareStatement(
+                    "update cliente set Nombre = ?, Nombre_legal = ?, Dirección = ?, NIF = ?, telefono = ?, email = ? where id_cliente = '" + ID + "'");
+                pst.setString(1, nombre);
+                pst.setString(2, nombre_legal);
+                pst.setString(3, direccion);
+                pst.setString(4, nif);
+                pst.setString(5, telefono);
+                pst.setString(6, email);
+                pst.executeUpdate();
+                pst.close();
+                cn.close();
+                JOptionPane.showMessageDialog(null, "Cliente actualizado correctamente");
+                
+            } catch (SQLException e) {
+                System.err.println("Error al actualizar cliente. " + e);
+                JOptionPane.showMessageDialog(null, "ERROR al actualizar usuario.\nContacte con el administrador del sistema.");
+            }
+        }else{
+            JOptionPane.showMessageDialog(null, "Debes llenar todos los campos.");
+        }
         
     }//GEN-LAST:event_jButton_ActualizarActionPerformed
 
-    private void jButton_RestaurarPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_RestaurarPasswordActionPerformed
-        
-    }//GEN-LAST:event_jButton_RestaurarPasswordActionPerformed
+    private void jButton_EliminarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_EliminarClienteActionPerformed
+        AdvertenciaEliminarCliente advertenciaEliminarCliente = new AdvertenciaEliminarCliente();
+        advertenciaEliminarCliente.setVisible(true);
+    }//GEN-LAST:event_jButton_EliminarClienteActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-
+        dispose();
+        NuevaFactura nuevaFactura = new NuevaFactura();
+        nuevaFactura.setVisible(true);
         
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton_VerFacturasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_VerFacturasActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton_VerFacturasActionPerformed
+
+    private void txt_nombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_nombreActionPerformed
+        txt_nombre.setBackground(Color.GREEN);
+    }//GEN-LAST:event_txt_nombreActionPerformed
+
+    private void txt_nombreLegalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_nombreLegalActionPerformed
+        txt_nombreLegal.setBackground(Color.GREEN);
+    }//GEN-LAST:event_txt_nombreLegalActionPerformed
+
+    private void txt_nifActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_nifActionPerformed
+        txt_nif.setBackground(Color.GREEN);
+    }//GEN-LAST:event_txt_nifActionPerformed
+
+    private void txt_emailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_emailActionPerformed
+        txt_email.setBackground(Color.GREEN);
+    }//GEN-LAST:event_txt_emailActionPerformed
+
+    private void txt_telefonoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_telefonoActionPerformed
+        txt_telefono.setBackground(Color.GREEN);
+    }//GEN-LAST:event_txt_telefonoActionPerformed
+
+    private void txt_nombreMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txt_nombreMouseClicked
+        txt_nombre.setBackground(new Color(153,153,255));
+    }//GEN-LAST:event_txt_nombreMouseClicked
+
+    private void txt_nombreLegalMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txt_nombreLegalMouseClicked
+        txt_nombreLegal.setBackground(new Color(153,153,255));
+    }//GEN-LAST:event_txt_nombreLegalMouseClicked
+
+    private void txt_nifMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txt_nifMouseClicked
+        txt_nif.setBackground(new Color(153,153,255));
+    }//GEN-LAST:event_txt_nifMouseClicked
+
+    private void txt_direccionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txt_direccionMouseClicked
+        txt_direccion.setBackground(new Color(153,153,255));
+    }//GEN-LAST:event_txt_direccionMouseClicked
 
     /**
      * @param args the command line arguments
@@ -274,7 +458,8 @@ public class InformacionCliente extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton_Actualizar;
-    private javax.swing.JButton jButton_RestaurarPassword;
+    private javax.swing.JButton jButton_EliminarCliente;
+    private javax.swing.JButton jButton_VerFacturas;
     private javax.swing.JLabel jLabel_Nombre;
     private javax.swing.JLabel jLabel_Nombre1;
     private javax.swing.JLabel jLabel_Nombre2;
@@ -283,11 +468,11 @@ public class InformacionCliente extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel_Nombre6;
     private javax.swing.JLabel jLabel_Titulo;
     private javax.swing.JLabel jLabel_Wallpaper;
-    private javax.swing.JTextField txt_mail;
+    private javax.swing.JTextField txt_direccion;
+    private javax.swing.JTextField txt_email;
+    private javax.swing.JTextField txt_nif;
     private javax.swing.JTextField txt_nombre;
-    private javax.swing.JTextField txt_registradoPor;
+    private javax.swing.JTextField txt_nombreLegal;
     private javax.swing.JTextField txt_telefono;
-    private javax.swing.JTextField txt_username;
-    private javax.swing.JTextField txt_username1;
     // End of variables declaration//GEN-END:variables
 }
