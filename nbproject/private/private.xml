@@ -3,11 +3,9 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/Adrian/Documents/NetBeansProjects/DataSystem/src/ventanas/GestionarClientes.java</file>
-            <file>file:/C:/Users/Adrian/Documents/NetBeansProjects/DataSystem/src/ventanas/InformacionCliente.java</file>
-            <file>file:/C:/Users/Adrian/Documents/NetBeansProjects/DataSystem/src/ventanas/NuevoAlbaran.java</file>
-            <file>file:/C:/Users/Adrian/Documents/NetBeansProjects/DataSystem/src/ventanas/NuevaFactura.java</file>
-            <file>file:/C:/Users/Adrian/Documents/NetBeansProjects/DataSystem/src/ventanas/AdvertenciaCancelarFactura.java</file>
+            <file>file:/C:/Users/samuel/Documents/NetBeansProjects/TallerTornoFumeroERP/src/ventanas/GestionarUsuarios.java</file>
+            <file>file:/C:/Users/samuel/Documents/NetBeansProjects/TallerTornoFumeroERP/src/ventanas/GestionarFacturas.java</file>
+            <file>file:/C:/Users/samuel/Documents/NetBeansProjects/TallerTornoFumeroERP/src/ventanas/NuevaFactura.java</file>
         </group>
     </open-files>
 </project-private>

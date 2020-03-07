@@ -17,7 +17,7 @@ public class Conexion {
             Connection cn = DriverManager.getConnection("jdbc:mysql://localhost/tallertornofumeroerp", "root", "");
             return cn;
         }catch(SQLException e){
-            System.out.println("Error en la conexión local " + e);
+            System.err.println("Error en la conexión local " + e);
         }
         
         return (null);

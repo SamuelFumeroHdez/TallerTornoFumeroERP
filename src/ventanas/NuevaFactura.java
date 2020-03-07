@@ -8,12 +8,13 @@ package ventanas;
 import java.sql.*;
 import clases.Conexion;
 import java.awt.Color;
-import java.awt.Image;
+//import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
@@ -25,10 +26,23 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.text.Chunk;
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Image;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.FontFactory;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.Rectangle;
+import com.itextpdf.text.pdf.PdfPCell;
+
+
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 
 
@@ -52,6 +66,7 @@ public class NuevaFactura extends javax.swing.JFrame{
     boolean factura_guardada  = false;
     
     double subtotal, impuestos, total;
+    String impuestos_string;
     
     DefaultTableModel model = new DefaultTableModel(); //Acceso a todos los métodos necesarios para modificar datos en su interior
 
@@ -122,7 +137,7 @@ public class NuevaFactura extends javax.swing.JFrame{
 
                 ImageIcon wallpaper = new ImageIcon("src/images/wallpaperPrincipal.jpg");
                 Icon icono = new ImageIcon(wallpaper.getImage().getScaledInstance(jLabel_Wallpaper.getWidth(),
-                        jLabel_Wallpaper.getHeight(), Image.SCALE_DEFAULT));
+                        jLabel_Wallpaper.getHeight(), java.awt.Image.SCALE_DEFAULT));
 
                 jLabel_Wallpaper.setIcon(icono);
                 
@@ -180,8 +195,8 @@ public class NuevaFactura extends javax.swing.JFrame{
     }
     
     @Override
-    public Image getIconImage(){
-        Image retValue = Toolkit.getDefaultToolkit().getImage(ClassLoader.getSystemResource("images/iconoERP_1.png"));
+    public java.awt.Image getIconImage(){
+        java.awt.Image retValue = Toolkit.getDefaultToolkit().getImage(ClassLoader.getSystemResource("images/iconoERP_1.png"));
         return retValue;
     }
     
@@ -357,6 +372,22 @@ public class NuevaFactura extends javax.swing.JFrame{
         }
     }
     
+    public void recopilarDatosCliente(){
+        try {
+            Connection cn = Conexion.conectar();
+            PreparedStatement pst = cn.prepareStatement(
+                    "select Nombre_legal, NIF, Dirección, email from cliente where id_cliente = '" + ID_cliente_factura + "'");
+            ResultSet rs = pst.executeQuery();
+            if(rs.next()){
+                this.nombre_legal_cliente_factura = rs.getString("Nombre_legal");
+                this.nif_cliente_factura = rs.getString("NIF");
+                this.direccion_cliente_factura = rs.getString("Dirección");
+            }
+        } catch (SQLException e) {
+            System.err.println(e);
+        }
+    }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -510,14 +541,137 @@ public class NuevaFactura extends javax.swing.JFrame{
         factura_guardada = true;
         Document documento = new Document();
         try {
+            recopilarDatosCliente();
             String ruta = System.getProperty("user.home");
             PdfWriter.getInstance(documento, new FileOutputStream(ruta + "/Desktop/Factura" + num_factura + ".pdf"));
             documento.open();
-            PdfPTable tablaDatos = new PdfPTable(2);
-            //tablaDatos.addCell();
+            Image header = Image.getInstance("src/images/datos_taller10.png");
+            header.scaleToFit(650, 1000);
+            header.setAlignment(Chunk.ALIGN_LEFT);
+            
+            Paragraph espacios = new Paragraph("\n");
+            Paragraph datos_cliente = new Paragraph("Nombre Legal: " + nombre_legal_cliente_factura + "\nNIF: " + 
+                    nif_cliente_factura + "\nDirección: " + direccion_cliente_factura);
+            
+            Paragraph p_nombre_cliente = new Paragraph(cliente_factura, FontFactory.getFont("Times New Roman", 12, Font.BOLD));
+            
+            String fecha_num_factura;
+            fecha_num_factura = annio.charAt(annio.length()-2) + "" + annio.charAt(annio.length()-1);
+            Paragraph p_n_factura = new Paragraph("FACTURA NUM. " + fecha_num_factura + "-" + num_factura, FontFactory.getFont("Times New Roman", 14, BaseColor.RED));
+            
+            String dia_documento = "";
+            String mes_documento = "";
+            if(dia.length()==1){
+                dia_documento = "0" + dia;
+            }else{
+                dia_documento = dia;
+            }
+            if(mes.length() == 1){
+                mes_documento = "0" + mes;
+            }else{
+                mes_documento = mes;
+            }
+            Paragraph p_fecha = new Paragraph("FECHA: " + dia_documento + "/" + mes_documento + "/" + annio, FontFactory.getFont("Times New Roman", 14, BaseColor.RED));
+            
+            int tipo_impuestos = cmb_impuestos.getSelectedIndex()+1;
+            String tipo_impuestos_string = "";
+            if(tipo_impuestos == 1){
+                tipo_impuestos_string = "IGIC (7%)";
+            }else{
+                tipo_impuestos_string = "Libre de Impuestos";
+            }
+            
+            
+            float[] anchos = {100, 300, 100};
+            PdfPTable tablaDatos = new PdfPTable(anchos);
+            
+            Paragraph p_n_albaran = new Paragraph("Nº ALBARÁN", FontFactory.getFont("Times New Roman", 14, BaseColor.RED));
+            p_n_albaran.setAlignment(Element.ALIGN_CENTER);
+            Paragraph p_desc_albaran = new Paragraph("                    "
+                    + "DESCRIPCIÓN", FontFactory.getFont("Times New Roman", 14, BaseColor.RED));
+            p_desc_albaran.setAlignment(Element.ALIGN_CENTER);
+            Paragraph p_precio_albaran = new Paragraph("    PRECIO", FontFactory.getFont("Times New Roman", 14, BaseColor.RED));
+            p_precio_albaran.setAlignment(Element.ALIGN_CENTER);
+            
+            tablaDatos.addCell(p_n_albaran);
+            tablaDatos.addCell(p_desc_albaran);
+            tablaDatos.addCell(p_precio_albaran);
+            
+            
+            try {
+                Connection cn = Conexion.conectar();
+                PreparedStatement pst = cn.prepareStatement(
+                        "select Num_albaran, Descripcion, Precio from albaran where num_factura = '" + num_factura + "'");
+                ResultSet rs = pst.executeQuery();
+                if(rs.next()){
+                    do{
+                        tablaDatos.addCell(rs.getString(1));
+                        tablaDatos.addCell(rs.getString(2));
+                        tablaDatos.addCell(String.valueOf(rs.getDouble(3)) + " €");
+                    }while(rs.next());
+                }
+            } catch (SQLException e) {
+                System.err.println("");
+               
+            }
+            
+            BigDecimal subtotalDocumento = BigDecimal.valueOf(subtotal);
+            subtotalDocumento = subtotalDocumento.setScale(2, RoundingMode.HALF_UP);
+            
+            BigDecimal impuestosDocumento = BigDecimal.valueOf(impuestos);
+            impuestosDocumento = impuestosDocumento.setScale(2, RoundingMode.HALF_UP);
+            
+            BigDecimal totalDocumento = BigDecimal.valueOf(total);
+            totalDocumento = totalDocumento.setScale(2, RoundingMode.HALF_UP);
+            
+            
+            PdfPCell celda_vacia = new PdfPCell(new Paragraph(""));
+            celda_vacia.setBorder(Rectangle.NO_BORDER);
+            
+            
+            Paragraph texto_celda_final_titulos = new Paragraph("\nSubtotal" +  
+                    "\nImpuestos: " + tipo_impuestos_string + 
+                    "\n\nTotal");
+            
+            PdfPCell celdaFinalTitulos = new PdfPCell(texto_celda_final_titulos);
+            
+            
+            //celdaFinalTitulos.setBorder(Rectangle.NO_BORDER);
+            
+            PdfPCell celdaFinalDatos = new PdfPCell(new Paragraph("\n" + subtotalDocumento + " €\n" + impuestosDocumento + " €\n\n" +
+                    totalDocumento + " €"));
+            //celdaFinalTitulos.setColspan(2);
+            
+            float[] anchos_tabla_importe = {150,120,60};
+            PdfPTable tablaImporte = new PdfPTable(anchos_tabla_importe);
+            
+            tablaImporte.addCell(celda_vacia);
+            tablaImporte.addCell(celdaFinalTitulos);
+            tablaImporte.addCell(celdaFinalDatos);
+            documento.add(header);
+            documento.add(espacios);
+            documento.add(datos_cliente);
+            documento.add(espacios);
+            documento.add(p_nombre_cliente);
+            documento.add(espacios);
+            documento.add(p_n_factura);
+            documento.add(espacios);
+            documento.add(p_fecha);
+            documento.add(espacios);
+            documento.add(tablaDatos);
+            documento.add(espacios);
+            documento.add(tablaImporte);
+            documento.close();
+            JOptionPane.showMessageDialog(null, "Factura guardada correctamente.");
+            
             //CONTINUAR POR AQUÍ
         } catch (Exception e) {
+            System.err.println(e);
+            JOptionPane.showInputDialog("El sistema no puede crear la ruta\n"
+                    + "Contacte con el administrador del sistema");
+            
         }
+        
         dispose();
 
     }//GEN-LAST:event_jButton_GuardarFacturaActionPerformed
