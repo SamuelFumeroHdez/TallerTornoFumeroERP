@@ -47,11 +47,11 @@ public class Login extends javax.swing.JFrame {
         
     }
     
-    @Override
+   /* @Override
     public Image getIconImage(){
         Image retValue = Toolkit.getDefaultToolkit().getImage(ClassLoader.getSystemResource("images/iconoERP_1.png"));
         return retValue;
-    }
+    }*/
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -105,7 +105,8 @@ public class Login extends javax.swing.JFrame {
 
     private void jButton_AccederActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_AccederActionPerformed
         user = txt_user.getText().trim();
-        pass = txt_password.getText().trim();
+        pass = String.valueOf(txt_password.getPassword());
+        
         
         if(!user.equals("") && !pass.equals("")){
             try {
@@ -171,10 +172,8 @@ public class Login extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Login().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new Login().setVisible(true);
         });
     }
 

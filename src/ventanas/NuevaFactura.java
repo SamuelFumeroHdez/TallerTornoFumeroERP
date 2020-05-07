@@ -22,8 +22,6 @@ import javax.swing.JTable;
 import javax.swing.WindowConstants;
 import javax.swing.table.DefaultTableModel;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
@@ -41,9 +39,10 @@ import com.itextpdf.text.Font;
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfPCell;
 
-
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
@@ -52,7 +51,8 @@ import java.io.FileOutputStream;
  */
 public class NuevaFactura extends javax.swing.JFrame{
     
-    String user, cliente_factura, nombre_legal_cliente_factura, nif_cliente_factura, direccion_cliente_factura;
+    String user, nombre_legal_cliente_factura, nif_cliente_factura, direccion_cliente_factura;
+    public static String cliente_factura;
     Calendar fecha = Calendar.getInstance();
     String dia = Integer.toString(fecha.get(Calendar.DATE));
     String mes = Integer.toString(fecha.get(Calendar.MONTH)+1);
@@ -67,6 +67,8 @@ public class NuevaFactura extends javax.swing.JFrame{
     
     double subtotal, impuestos, total;
     String impuestos_string;
+    
+    
     
     DefaultTableModel model = new DefaultTableModel(); //Acceso a todos los métodos necesarios para modificar datos en su interior
 
@@ -118,10 +120,12 @@ public class NuevaFactura extends javax.swing.JFrame{
                     "select * from factura where num_factura = '" + num_factura + "'");
             ResultSet rs = pst.executeQuery();
             if(rs.next()){
+                this.dispose();
+                
                 JOptionPane.showMessageDialog(null, "Ya existe una factura con el número de factura introducido.\n"
                         + "Por favor, vuelva a intentarlo con otro número de factura");
                 num_factura_repetido = true;
-                dispose();
+                
                 
             }else{
                 setSize(950,600);
@@ -194,13 +198,14 @@ public class NuevaFactura extends javax.swing.JFrame{
         
     }
     
-    @Override
+    /*@Override
     public java.awt.Image getIconImage(){
         java.awt.Image retValue = Toolkit.getDefaultToolkit().getImage(ClassLoader.getSystemResource("images/iconoERP_1.png"));
         return retValue;
-    }
+    }*/
     
     public void eliminarDatos(){
+        System.out.println("Datos eliminados");
         try {
             Connection cn = Conexion.conectar();
             PreparedStatement pst = cn.prepareStatement(
@@ -294,40 +299,46 @@ public class NuevaFactura extends javax.swing.JFrame{
         jLabel_impuestos.setText("Impuestos");
         jLabel_subtotal.setText("Subtotal:");
         jLabel_total.setText("Total:");
-        jLabel_subtotal.setText(jLabel_subtotal.getText() + " " + subtotal + " €");
-        BigDecimal a = BigDecimal.valueOf(impuestos);
+        BigDecimal a = BigDecimal.valueOf(subtotal);
         a = a.setScale(2, RoundingMode.HALF_UP);
-        jLabel_impuestos.setText(jLabel_impuestos.getText() + " " + tipo_impuesto_string + ": " + a  + " €");
-        actualizarTotal();
-        BigDecimal b = BigDecimal.valueOf(total);
+        jLabel_subtotal.setText(jLabel_subtotal.getText() + " " + a + " €");
+        BigDecimal b = BigDecimal.valueOf(impuestos);
         b = b.setScale(2, RoundingMode.HALF_UP);
-        jLabel_total.setText(jLabel_total.getText() + " " + b + " €");
+        jLabel_impuestos.setText(jLabel_impuestos.getText() + " " + tipo_impuesto_string + ": " + b  + " €");
+        actualizarTotal();
+        BigDecimal c = BigDecimal.valueOf(total);
+        c = c.setScale(2, RoundingMode.HALF_UP);
+        jLabel_total.setText(jLabel_total.getText() + " " + c + " €");
         actualizarTabla();
     }
     
     public void actualizarTabla(){
-        limpiarTabla();
-        try {
-            Connection cn = Conexion.conectar();
-            PreparedStatement pst = cn.prepareStatement(
-                    "select Num_albaran, Descripcion, Precio from albaran where num_factura = '" 
-                            + num_factura  + "'");
-            ResultSet rs = pst.executeQuery();
-            while(rs.next()){
-                Object[] fila = new Object[3];
-                for (int i = 0; i < 3; i++) {
-                    fila[i] = rs.getObject(i + 1);
+        if(!NuevoAlbaran.num_albaran_repetido)
+        {
+            limpiarTabla();
+            try {
+                Connection cn = Conexion.conectar();
+                PreparedStatement pst = cn.prepareStatement(
+                        "select Num_albaran, Descripcion, Precio from albaran where num_factura = '" 
+                                + num_factura  + "'");
+                ResultSet rs = pst.executeQuery();
+                while(rs.next()){
+                    Object[] fila = new Object[3];
+                    for (int i = 0; i < 3; i++) {
+                        fila[i] = rs.getObject(i + 1);
+                    }
+                    model.addRow(fila);
                 }
-                model.addRow(fila);
+                pst.close();
+                cn.close();
+            } catch (SQLException e) {
+                System.err.println("Error al mostrar albaranes. " + e);
+                JOptionPane.showMessageDialog(null, "ERROR al mostrar albaranes."
+                        + "\nContace con el administrador del sistema.");
+                dispose();
             }
-            pst.close();
-            cn.close();
-        } catch (SQLException e) {
-            System.err.println("Error al mostrar albaranes. " + e);
-            JOptionPane.showMessageDialog(null, "ERROR al mostrar albaranes."
-                    + "\nContace con el administrador del sistema.");
-            dispose();
         }
+        
     }
     
     public void recuperarDatosCliente(){
@@ -345,23 +356,6 @@ public class NuevaFactura extends javax.swing.JFrame{
     
     public void limpiarTabla(){
         model.setRowCount(0);
-        /*try {
-            Connection cn = Conexion.conectar();
-            PreparedStatement pst = cn.prepareStatement(
-                    "select * from albaran where num_factura = '" 
-                            + num_factura  + "'");
-            ResultSet rs = pst.executeQuery();
-            while(rs.next()){
-                model.removeRow(fila);
-            }
-            pst.close();
-            cn.close();
-        } catch (SQLException e) {
-            System.err.println("Error al refrescar albaranes. " + e);
-            JOptionPane.showMessageDialog(null, "ERROR al refrescar albaranes."
-                    + "\nContace con el administrador del sistema.");
-            dispose();
-        }*/
     }
     
     
@@ -414,6 +408,11 @@ public class NuevaFactura extends javax.swing.JFrame{
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setIconImage(getIconImage());
+        addContainerListener(new java.awt.event.ContainerAdapter() {
+            public void componentAdded(java.awt.event.ContainerEvent evt) {
+                formComponentAdded(evt);
+            }
+        });
         addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 formFocusGained(evt);
@@ -425,6 +424,9 @@ public class NuevaFactura extends javax.swing.JFrame{
             }
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);
+            }
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
             }
         });
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -532,9 +534,9 @@ public class NuevaFactura extends javax.swing.JFrame{
 
     private void jButton_NuevoAlbaranActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_NuevoAlbaranActionPerformed
         
-        dispose();
+        //dispose();
         NuevoAlbaran nuevoAlbaran = new NuevoAlbaran(this);
-        nuevoAlbaran.setVisible(true);
+        
     }//GEN-LAST:event_jButton_NuevoAlbaranActionPerformed
 
     private void jButton_GuardarFacturaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_GuardarFacturaActionPerformed
@@ -544,10 +546,12 @@ public class NuevaFactura extends javax.swing.JFrame{
             recopilarDatosCliente();
             String ruta = System.getProperty("user.home");
             PdfWriter.getInstance(documento, new FileOutputStream(ruta + "/Desktop/Factura" + num_factura + ".pdf"));
+            
             documento.open();
-            Image header = Image.getInstance("src/images/datos_taller10.png");
-            header.scaleToFit(650, 1000);
+            Image header = Image.getInstance("src/images/logo.jpg");
+            header.scaleToFit(300, 320);
             header.setAlignment(Chunk.ALIGN_LEFT);
+            
             
             Paragraph espacios = new Paragraph("\n");
             Paragraph datos_cliente = new Paragraph("Nombre Legal: " + nombre_legal_cliente_factura + "\nNIF: " + 
@@ -582,9 +586,52 @@ public class NuevaFactura extends javax.swing.JFrame{
             }
             
             
-            float[] anchos = {100, 300, 100};
-            PdfPTable tablaDatos = new PdfPTable(anchos);
             
+            PdfPCell celda_logotipo = new PdfPCell(header);
+            //celda_logotipo.setPaddingLeft(0);
+            /*celda_logotipo.setUseVariableBorders(true);
+            celda_logotipo.setBorderColorTop(new BaseColor(255,0,0));
+            celda_logotipo.setBorderColorBottom(BaseColor.RED);*/
+            PdfPCell celda_vacia_header1 = new PdfPCell(new Paragraph(""));
+            celda_vacia_header1.setUseVariableBorders(true);
+            celda_vacia_header1.setBorderColorTop(BaseColor.WHITE);
+            celda_vacia_header1.setBorderColorBottom(BaseColor.WHITE);
+            celda_vacia_header1.setBorderColorLeft(BaseColor.WHITE);
+            celda_vacia_header1.setBorderColorRight(BaseColor.WHITE);
+            PdfPCell celda_vacia_header2 = new PdfPCell(new Paragraph(""));
+            celda_vacia_header2.setUseVariableBorders(true);
+            celda_vacia_header2.setBorderColorTop(BaseColor.WHITE);
+            celda_vacia_header2.setBorderColorBottom(BaseColor.WHITE);
+            celda_vacia_header2.setBorderColorLeft(BaseColor.WHITE);
+            celda_vacia_header2.setBorderColorRight(BaseColor.WHITE);
+         
+            Paragraph p_datos_taller = new Paragraph("TALLER TORNO FUMERO\n"
+                    + "Juan Basilio Fumero León\n"
+                    + "\n"
+                    + "NIF: 43607094Z\n"
+                    + "C/Granadilla Esqu.C/Arona, 16\n"
+                    + "38205-FINCA ESPAÑA, TENERIFE\n"
+                    + "Tfno: 922654458 - 615932011\n"
+                    + "Email: tallertornofumero@hotmail.com", FontFactory.getFont("Times New Roman", 10, BaseColor.BLACK));
+            PdfPCell celda_datos_taller = new PdfPCell(p_datos_taller);
+            //celda_datos_taller.setPaddingLeft(0);
+            /*celda_datos_taller.setUseVariableBorders(true);
+            celda_datos_taller.setBorderColorTop(BaseColor.WHITE);
+            celda_datos_taller.setBorderColorBottom(BaseColor.WHITE);*/
+            float anchos[] = {350, 150, 150, 350};
+            PdfPTable tablaDatosTaller = new PdfPTable(anchos);
+            tablaDatosTaller.setHorizontalAlignment(Element.ALIGN_LEFT);
+            tablaDatosTaller.getDefaultCell().setBorder(Rectangle.NO_BORDER);
+            tablaDatosTaller.addCell(header);
+            tablaDatosTaller.addCell(celda_vacia_header1);
+            tablaDatosTaller.addCell(celda_vacia_header2);
+            tablaDatosTaller.addCell(p_datos_taller);
+            
+            
+            
+            
+            float[] anchosTablaDatos = {100,300,100};
+            PdfPTable tablaDatos = new PdfPTable(anchosTablaDatos);
             Paragraph p_n_albaran = new Paragraph("Nº ALBARÁN", FontFactory.getFont("Times New Roman", 14, BaseColor.RED));
             p_n_albaran.setAlignment(Element.ALIGN_CENTER);
             Paragraph p_desc_albaran = new Paragraph("                    "
@@ -607,7 +654,11 @@ public class NuevaFactura extends javax.swing.JFrame{
                     do{
                         tablaDatos.addCell(rs.getString(1));
                         tablaDatos.addCell(rs.getString(2));
-                        tablaDatos.addCell(String.valueOf(rs.getDouble(3)) + " €");
+                        
+                        BigDecimal a = BigDecimal.valueOf(rs.getDouble(3));
+                        a = a.setScale(2, RoundingMode.HALF_UP);
+                        String precio_albaran = String.valueOf(a);
+                        tablaDatos.addCell(precio_albaran + " €");
                     }while(rs.next());
                 }
             } catch (SQLException e) {
@@ -648,7 +699,9 @@ public class NuevaFactura extends javax.swing.JFrame{
             tablaImporte.addCell(celda_vacia);
             tablaImporte.addCell(celdaFinalTitulos);
             tablaImporte.addCell(celdaFinalDatos);
-            documento.add(header);
+            
+            documento.add(espacios);
+            documento.add(tablaDatosTaller);
             documento.add(espacios);
             documento.add(datos_cliente);
             documento.add(espacios);
@@ -716,6 +769,15 @@ public class NuevaFactura extends javax.swing.JFrame{
         }
         actualizarDatos();
     }//GEN-LAST:event_cmb_impuestosItemStateChanged
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        // TODO add your handling code here:
+        comprobarNumFacturaRepetido();
+    }//GEN-LAST:event_formWindowOpened
+
+    private void formComponentAdded(java.awt.event.ContainerEvent evt) {//GEN-FIRST:event_formComponentAdded
+        // TODO add your handling code here:
+    }//GEN-LAST:event_formComponentAdded
 
     
     /**

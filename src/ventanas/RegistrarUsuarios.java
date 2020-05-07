@@ -43,11 +43,11 @@ public class RegistrarUsuarios extends javax.swing.JFrame {
         
     }
     
-    @Override
+    /*@Override
     public Image getIconImage(){
         Image retValue = Toolkit.getDefaultToolkit().getImage(ClassLoader.getSystemResource("images/iconoERP_1.png"));
         return retValue;
-    }
+    }*/
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -168,7 +168,7 @@ public class RegistrarUsuarios extends javax.swing.JFrame {
         String nombre, mail, telefono, username, pass, permisos_string;
         mail = txt_mail.getText().trim();
         username = txt_username.getText().trim();
-        pass = txt_password.getText().trim();
+        pass = String.valueOf(txt_password.getPassword());
         nombre = txt_nombre.getText().trim();
         telefono = txt_telefono.getText().trim();
         permisos_cmb = cmb_niveles.getSelectedIndex()+1;

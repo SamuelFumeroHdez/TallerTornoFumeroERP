@@ -70,11 +70,11 @@ public class InformacionUsuario extends javax.swing.JFrame {
         }
     }
     
-    @Override
+    /*@Override
     public Image getIconImage(){
         Image retValue = Toolkit.getDefaultToolkit().getImage(ClassLoader.getSystemResource("images/iconoERP_1.png"));
         return retValue;
-    }
+    }*/
 
     /**
      * This method is called from within the constructor to initialize the form.

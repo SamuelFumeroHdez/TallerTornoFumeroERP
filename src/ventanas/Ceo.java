@@ -62,11 +62,11 @@ public class Ceo extends javax.swing.JFrame {
         }
     }
     
-    @Override
+    /*@Override
     public Image getIconImage(){
         Image retValue = Toolkit.getDefaultToolkit().getImage(ClassLoader.getSystemResource("images/iconoERP_1.png"));
         return retValue;
-    }
+    }*/
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -174,6 +174,7 @@ public class Ceo extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton_GestionarClientesActionPerformed
 
     private void jButton_CrearFacturaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_CrearFacturaActionPerformed
+        
         SeleccionarClienteFactura seleccionarClienteFactura = new SeleccionarClienteFactura();
         seleccionarClienteFactura.setVisible(true);
     }//GEN-LAST:event_jButton_CrearFacturaActionPerformed

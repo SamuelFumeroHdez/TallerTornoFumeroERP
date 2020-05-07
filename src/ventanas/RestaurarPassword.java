@@ -45,11 +45,11 @@ public class RestaurarPassword extends javax.swing.JFrame {
         
     }
     
-    @Override
+   /* @Override
     public Image getIconImage(){
         Image retValue = Toolkit.getDefaultToolkit().getImage(ClassLoader.getSystemResource("images/iconoERP_1.png"));
         return retValue;
-    }
+    }*/
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -134,8 +134,8 @@ public class RestaurarPassword extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton_RestaurarPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_RestaurarPasswordActionPerformed
-        String pass1 = txt_password.getText();
-        String pass2 = txt_passwordConfirmacion.getText();
+        String pass1 = String.valueOf(txt_password.getPassword());
+        String pass2 = String.valueOf(txt_passwordConfirmacion.getPassword());
         int validacion = 0;
         if(pass1.equals("")){
             txt_password.setBackground(Color.red);

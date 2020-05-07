@@ -48,7 +48,7 @@ public class RegistrarCliente extends javax.swing.JFrame {
         
     }
     
-    @Override
+    /*@Override
     public Image getIconImage(){
         Image retValue = Toolkit.getDefaultToolkit().getImage(ClassLoader.getSystemResource("images/iconoERP_1.png"));
         return retValue;

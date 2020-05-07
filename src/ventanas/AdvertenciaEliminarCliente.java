@@ -55,11 +55,11 @@ public class AdvertenciaEliminarCliente extends javax.swing.JFrame {
         jLabel_advertencia3.setText("¿Desea eliminar a " + cliente_delete + " DEFINITIVAMENTE?");
         
     }
-    @Override
+    /*@Override
     public Image getIconImage(){
         Image retValue = Toolkit.getDefaultToolkit().getImage(ClassLoader.getSystemResource("images/iconoERP_1.png"));
         return retValue;
-    }
+    }*/
 
     /**
      * This method is called from within the constructor to initialize the form.

@@ -32,25 +32,32 @@ public class NuevoAlbaran extends javax.swing.JFrame {
     String descripcion;
     NuevaFactura nf;
     boolean cancelar = true;
+    static boolean num_albaran_repetido = false;
     public NuevoAlbaran(NuevaFactura nuevaFactura) {
+        num_albaran_repetido = false;
         initComponents();
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         
-        user = nuevaFactura.user;
+        user = Login.user;
         cliente_albaran = nuevaFactura.cliente_factura;
         nf = nuevaFactura;
         
         num_albaran = Integer.parseInt(JOptionPane.showInputDialog(null, "Introduzca el número del Albarán"));
-        try {
+        try { //Consultar en la BD si existe un albarán con el mismo número
             Connection cn = Conexion.conectar();
             PreparedStatement pst = cn.prepareStatement(
                     "select * from albaran where Num_albaran = '" + num_albaran + "'");
             ResultSet rs = pst.executeQuery();
-            if(rs.next()){
+            if(rs.next()){ //Si hay coincidencia, NO crear nuevo albaran
+                
                 JOptionPane.showMessageDialog(null, "Numero de albarán repetido.");
-                this.dispose();
+                num_albaran_repetido = true;
+                
                 nuevaFactura.setVisible(true);
+                comprobarNumAlbaranRepetido();
             }else{
+                this.setVisible(true);
+                jLabel_titulo.setText(cliente_albaran);
                 setSize(950,475);
                 setResizable(false);
                 setTitle("Albarán para " + cliente_albaran + " - Sesión de " + user);
@@ -67,7 +74,7 @@ public class NuevoAlbaran extends javax.swing.JFrame {
                 precio = 0.0;
                 descripcion = "";
                 jTextField_numFactura.setText(String.valueOf(num_albaran));
-                jTextField_precio.setText(String.valueOf(0.0));
+                jTextField_precio.setText("");
                 jTextArea_Descripcion.setText("");
                 
                 crearAlbaran();
@@ -82,11 +89,11 @@ public class NuevoAlbaran extends javax.swing.JFrame {
          
     }
     
-    @Override
+   /* @Override
     public Image getIconImage(){
         Image retValue = Toolkit.getDefaultToolkit().getImage(ClassLoader.getSystemResource("images/iconoERP_1.png"));
         return retValue;
-    }
+    }*/
     
     public void crearAlbaran(){
         
@@ -149,6 +156,11 @@ public class NuevoAlbaran extends javax.swing.JFrame {
         }
         
         
+    }
+    private void comprobarNumAlbaranRepetido(){
+        if(num_albaran_repetido){
+            this.dispose();
+        }
     }
 
     private NuevoAlbaran() {
@@ -250,7 +262,7 @@ public class NuevoAlbaran extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton_ActualizarActionPerformed
 
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
-        if(cancelar){
+        if(cancelar && !num_albaran_repetido){
             try {
             Connection cn = Conexion.conectar();
             PreparedStatement pst = cn.prepareStatement(
@@ -267,7 +279,10 @@ public class NuevoAlbaran extends javax.swing.JFrame {
         
         nf.setVisible(true);
     }//GEN-LAST:event_formWindowClosed
-
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {                                  
+        // TODO add your handling code here:
+        comprobarNumAlbaranRepetido();
+    } 
     /**
      * @param args the command line arguments
      */
